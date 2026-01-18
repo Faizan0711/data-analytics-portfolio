@@ -15,6 +15,13 @@ Analytics Concepts: Business metrics, attribution, segmentation
 
 Mindset: Problem-solving, communication, continuous learning, AI-focused growth
 
+🎓 Education
+**Master of Engineering (Electrical and Computer Engineering)**  
+University of Windsor, Canada  
+
+Relevant focus: data analytics, computer networks, system-level problem solving, and applied programming. Strong analytical foundation supporting real-world data projects.
+Why this works
+
 📁 Projects
 
 Each project follows an end-to-end analytics workflow: data preparation → analysis → insights → visualization.
