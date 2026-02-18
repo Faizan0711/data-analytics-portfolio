@@ -1,80 +1,136 @@
-# COVID-19 Screening Model – Logistic Regression with False Negative Optimization
+🦠 COVID-19 Screening API
 
-## 📌 Project Overview
-This project presents an end-to-end machine learning pipeline for **COVID-19 screening**, built using **logistic regression** and optimized to **minimize false negatives**.
+Logistic Regression Model Optimized for False Negative Reduction
 
-In healthcare screening scenarios, missing a COVID-positive patient can have severe public health consequences. Therefore, this model prioritizes **high sensitivity (recall)** over overall accuracy, explicitly trading off false positives to eliminate missed infections.
+📌 Project Overview
 
----
+This project trains and deploys a Logistic Regression model for COVID-19 screening using FastAPI.
 
-## 🎯 Objectives
-- Predict COVID-19 test outcomes (Positive / Negative)
-- Minimize **false negatives**
-- Demonstrate **cost-sensitive classification**
-- Showcase **threshold tuning** as a business decision
-- Follow **industry-level ML best practices**
+The model is optimized to reduce false negatives, making it suitable for screening contexts where missing a positive case is costly.
 
----
+The trained pipeline (preprocessing + model) is exposed as a REST API endpoint for real-time inference.
 
-## 🗂 Dataset
-- **Source:** Hospital Israelita Albert Einstein (Brazil)
-- **Type:** Clinical laboratory test results
-- **Target Variable:** `SARS-Cov-2 exam result`
-- **Class Imbalance:** ~10% positive, ~90% negative
+🧠 Model Architecture
 
----
+Algorithm: Logistic Regression
 
-## 🧠 Key Methodology
-- Leakage audit to remove post-diagnosis variables (ICU / ward admission)
-- Missing-data strategy with explicit `not_tested` encoding
-- Stratified **Train / Validation / Test** split
-- Logistic Regression with **class weighting**
-- Threshold sensitivity analysis to control false negatives
+Preprocessing:
 
----
+Numerical → SimpleImputer + StandardScaler
 
-## 📊 Final Test Set Results (Selected Threshold = 0.15)
+Categorical → OneHotEncoder
 
-| Metric | Value |
-|------|------|
-| Recall (Positive) | **1.00** |
-| False Negatives | **0** |
-| Precision (Positive) | ~0.10 |
-| PR-AUC | 0.18 |
+Evaluation Metric Focus:
 
-> The model successfully eliminated false negatives on the test set, demonstrating suitability as a **screening or triage support tool**.
+False Negative Rate
 
----
+Custom Classification Threshold: 0.20 (instead of default 0.50)
 
-## 📈 Threshold Sensitivity
-Thresholds between **0.05 and 0.20** maintained perfect recall while steadily reducing false positives, allowing operational flexibility depending on hospital capacity.
+🚀 Running the API Locally
+1️⃣ Clone Repository
+git clone <your-repo-url>
+cd <repo-folder>
 
----
+2️⃣ Create Virtual Environment (Recommended)
+python -m venv .venv
+.venv\Scripts\activate
 
-## 📁 Repository Contents
-- `notebooks/` → End-to-end modeling notebook
-- `reports/` → Model card, data dictionary, and findings
-- `requirements.txt` → Python dependencies
+3️⃣ Install Dependencies
+pip install -r requirements.txt
 
----
+4️⃣ Run FastAPI Server
+uvicorn app:app --reload
 
-## ⚠️ Limitations
-- High false-positive rate (expected for screening models)
-- Single-institution dataset
-- Not intended as a standalone diagnostic system
 
----
+Server runs at:
 
-## 🚀 Future Improvements
-- Probability calibration
-- Two-stage screening pipeline
-- External validation on multi-hospital data
-- Cost-based threshold optimization
+http://127.0.0.1:8000
 
----
+📚 Interactive API Documentation
 
-## 👤 Author
-**Mohamed Ali Faizan Syed**  
-Data Analytics & Machine Learning  
-📍 Canada
+Open:
 
+http://127.0.0.1:8000/docs
+
+
+This provides automatic Swagger UI for testing endpoints.
+
+🔍 API Endpoints
+✅ Health Check
+GET /health
+
+
+Response:
+
+{
+  "status": "ok"
+}
+
+📋 Get Expected Feature Names
+GET /features
+
+
+Returns the list of model input features.
+
+🔮 Prediction Endpoint
+POST /predict
+
+Example Request
+{
+  "features": {
+    "Age": 45,
+    "Fever": 1,
+    "Cough": 1
+  }
+}
+
+Example Response
+{
+  "prediction": 1,
+  "label": "positive",
+  "probability_positive": 0.264343,
+  "threshold_used": 0.2
+}
+
+⚙️ Inference Workflow
+
+Receive JSON request
+
+Convert input into Pandas DataFrame
+
+Apply saved preprocessing pipeline
+
+Generate probability
+
+Apply custom threshold
+
+Return JSON response
+
+🏗 Deployment Architecture
+Client Request
+      ↓
+FastAPI Server
+      ↓
+Preprocessing Pipeline
+      ↓
+Logistic Regression Model
+      ↓
+Threshold Decision
+      ↓
+JSON Response
+
+🛡 Design & Engineering Considerations
+
+Model loaded once at application startup
+
+Complete pipeline saved using joblib
+
+Version-pinned dependencies to prevent compatibility issues
+
+Threshold tuning optimized for healthcare screening context
+
+Separation between training and inference logic
+
+⚠️ Important Note
+
+This model is for educational demonstration purposes only and should not be used for real medical diagnosis.
